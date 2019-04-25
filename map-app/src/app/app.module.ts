@@ -19,7 +19,7 @@ import { TableComponent } from './table/table.component';
     BrowserModule,
     AppRoutingModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBH62vvSrTI9W3OLRH3y7hW8hgSgRVDrJQ'
+      apiKey: ''
     }),
     HttpClientModule,
     BrowserAnimationsModule,
