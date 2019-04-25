@@ -10,6 +10,9 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule, MatFormFieldModule, MatTableModule, MatInputModule } from '@angular/material';
 import { TableComponent } from './table/table.component';
+import { ChartComponent } from './chart/chart.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 
 
@@ -26,13 +29,16 @@ import { TableComponent } from './table/table.component';
     MatToolbarModule,
     MatFormFieldModule,
     MatTableModule,
-    MatInputModule
+    MatInputModule,
+    NgxChartsModule,
+    FlexLayoutModule
   ],
   declarations: [
     AppComponent,
     MapComponent,
     ToolbarComponent,
-    TableComponent
+    TableComponent,
+    ChartComponent
   ],
   providers: [
     GoogleMapsAPIWrapper
