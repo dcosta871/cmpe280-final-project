@@ -1,8 +1,8 @@
-import {Component, Input, ViewChild, NgZone, OnInit, OnDestroy} from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MapsAPILoader, AgmMap } from '@agm/core';
 import { ParkApiService } from '../park-api.service';
-import { Ride } from '../ride';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-map',
@@ -15,9 +15,11 @@ export class MapComponent implements OnInit, OnDestroy {
   lat: number;
   lng: number;
   zoom: number;
-  rides: Ride[] = [];
-  ridesSubscription: Subscription;
-  constructor(public mapsApiLoader: MapsAPILoader, private rideApiService: ParkApiService) { }
+  visibleRides = [];
+  totalRides = [];
+  parksSubscription: Subscription;
+  eventServiceSubscription: Subscription;
+  constructor(public mapsApiLoader: MapsAPILoader, private parkApiService: ParkApiService, private eventService: EventService) { }
 
   ngOnInit() {
     // Load map and center it on theme park
@@ -28,20 +30,36 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     // Get list of rides from server
-    this.ridesSubscription = this.rideApiService.getParks().subscribe(res => {
+    this.parksSubscription = this.parkApiService.getParks().subscribe(res => {
       const keys = Object.keys(res.body);
       for (const key of keys) {
         const parkRides = res.body[key].rides;
+        const rideParkName = res.body[key].parkName;
         for (const ride of parkRides) {
-          this.rides.push(ride);
+          this.totalRides.push({
+            rideName: ride.rideName,
+            lat: ride.lat,
+            lng: ride.lng,
+            parkName: rideParkName
+          });
+          this.visibleRides.push(ride);
+        }
+      }
+    });
+
+    this.eventServiceSubscription = this.eventService.parkFilter$.subscribe(parkFilter => {
+      this.visibleRides = [];
+      for (const ride of this.totalRides) {
+        if (ride.parkName === parkFilter || parkFilter === 'All Parks') {
+          this.visibleRides.push(ride);
         }
       }
     });
   }
 
   ngOnDestroy() {
-    if (this.ridesSubscription) {
-      this.ridesSubscription.unsubscribe();
+    if (this.parksSubscription) {
+      this.parksSubscription.unsubscribe();
     }
   }
 }
