@@ -13,7 +13,7 @@ export class ParkApiService {
   constructor(private http: HttpClient) {}
 
   getParks(): Observable<HttpResponse<Park[]>> {
-    return this.http.get<Park[]>(FLASK_URL + '/parks', {observe: 'response'});
+    return this.http.get<Park[]>(FLASK_URL + '/api/parks', {observe: 'response'});
   }
 
   getPrediction(predictInput): Observable<Metric[]> {
@@ -22,6 +22,6 @@ export class ParkApiService {
         'Content-Type': 'application/json'
       })
     };
-    return this.http.post<Metric[]>(FLASK_URL + '/predict', predictInput, httpOptions);
+    return this.http.post<Metric[]>(FLASK_URL + '/api/predict', predictInput, httpOptions);
   }
 }
