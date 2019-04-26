@@ -13,7 +13,8 @@ import { EventService } from '../event.service';
 export class TableComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['ride', 'park'];
   ridesSubscription: Subscription;
-  eventSubscription: Subscription;
+  eventParkFilterSubscription: Subscription;
+  eventDateChangeSubscription: Subscription;
   rides = [];
   dataSource: MatTableDataSource < {} >;
   constructor(private rideApiService: ParkApiService, private eventService: EventService) { }
@@ -40,7 +41,7 @@ export class TableComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.eventSubscription = this.eventService.parkFilter$.subscribe(parkFilter => {
+    this.eventParkFilterSubscription = this.eventService.parkFilter$.subscribe(parkFilter => {
       this.dataSource = new MatTableDataSource([]);
       const data = this.dataSource.data;
       for (const ride of this.rides) {
@@ -50,6 +51,10 @@ export class TableComponent implements OnInit, OnDestroy {
       }
       this.dataSource.data = data;
     });
+  }
+
+  getRecord(row) {
+    this.eventService.rideChange(row.ride, true);
   }
 
   applyFilter(filterValue: string) {

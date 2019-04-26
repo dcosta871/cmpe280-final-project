@@ -15,6 +15,17 @@ export class MapComponent implements OnInit, OnDestroy {
   lat: number;
   lng: number;
   zoom: number;
+  public mapStyles = [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [
+        {
+          visibility: 'off'
+        }
+      ]
+    }
+  ];
   visibleRides = [];
   totalRides = [];
   parksSubscription: Subscription;
@@ -55,6 +66,21 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    this.eventServiceSubscription = this.eventService.rideChange$.subscribe(rideChange => {
+      if (rideChange.adjust) {
+        for (const ride of this.visibleRides) {
+          if (ride.rideName === rideChange.ride) {
+            this.lat = ride.lat;
+            this.lng = ride.lng;
+          }
+        }
+      }
+    });
+  }
+
+  handleRideClick(ride) {
+    this.eventService.rideChange(ride.rideName, false);
   }
 
   ngOnDestroy() {

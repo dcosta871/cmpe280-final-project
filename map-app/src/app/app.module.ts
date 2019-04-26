@@ -8,17 +8,15 @@ import { MapComponent } from './map/map.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatFormFieldModule, MatTableModule, MatInputModule, MatSelectModule } from '@angular/material';
+import { MatToolbarModule, MatFormFieldModule, MatTableModule, MatInputModule, MatSelectModule,
+  MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 import { TableComponent } from './table/table.component';
 import { ChartComponent } from './chart/chart.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RideFilterComponent } from './ride-filter/ride-filter.component';
 import { FormsModule } from '@angular/forms';
-
-
-
-
+import { DatePickerComponent } from './date-picker/date-picker.component';
 
 @NgModule({
   imports: [
@@ -36,7 +34,9 @@ import { FormsModule } from '@angular/forms';
     NgxChartsModule,
     FlexLayoutModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   declarations: [
     AppComponent,
@@ -44,7 +44,8 @@ import { FormsModule } from '@angular/forms';
     ToolbarComponent,
     TableComponent,
     ChartComponent,
-    RideFilterComponent
+    RideFilterComponent,
+    DatePickerComponent
   ],
   providers: [
     GoogleMapsAPIWrapper

@@ -12,3 +12,11 @@ table {
   margin-top: 40px;
   overflow-y: auto;
 }
+
+td {
+  cursor: pointer;
+}
+
+.mat-row:hover {
+  background-color: #F1F1F1;
+}

@@ -1,4 +1,4 @@
-import {Ride} from './ride';
+import { Ride } from './ride';
 
 export class Park {
   parkName: string;
