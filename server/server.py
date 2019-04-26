@@ -8,10 +8,10 @@ client = MongoClient('localhost', 27017)
 db = client.rides_app_db
 
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
-@app.route("/parks", methods=["GET"])
+@app.route("/api/parks", methods=["GET"])
 def rides():
     rides_cursor = db.parks.find({}, {'_id': False})
     rides = []
@@ -20,7 +20,7 @@ def rides():
     return jsonify(rides)
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/api/predict", methods=["POST"])
 def predict():
     request_json = request.get_json()
     print(request_json)
@@ -94,3 +94,6 @@ def predict():
         'value': random.randint(1,101)
       }
     ]);
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=80)
