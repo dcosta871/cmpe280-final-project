@@ -5,7 +5,8 @@
 export const environment = {
   production: false
 };
-export const FLASK_URL = 'http://localhost';
+export const FLASK_URL = 'http://ec2-35-167-243-5.us-west-2.compute.amazonaws.com';
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
