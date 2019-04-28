@@ -9,7 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule, MatFormFieldModule, MatTableModule, MatInputModule, MatSelectModule,
-  MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+  MatDatepickerModule, MatNativeDateModule, MatDialogModule, MatButtonModule, MatSnackBarModule,
+  MatCheckboxModule } from '@angular/material';
 import { TableComponent } from './table/table.component';
 import { ChartComponent } from './chart/chart.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -17,6 +18,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RideFilterComponent } from './ride-filter/ride-filter.component';
 import { FormsModule } from '@angular/forms';
 import { DatePickerComponent } from './date-picker/date-picker.component';
+import { LoginComponent } from './login/login.component';
+import { CreateUserComponent } from './create-user/create-user.component';
+import { FavoriteRidesComponent } from './favorite-rides/favorite-rides.component';
+import { FavoriteRidesSelectorComponent } from './favorite-rides-selector/favorite-rides-selector.component';
 
 @NgModule({
   imports: [
@@ -36,7 +41,11 @@ import { DatePickerComponent } from './date-picker/date-picker.component';
     MatSelectModule,
     FormsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatCheckboxModule
   ],
   declarations: [
     AppComponent,
@@ -45,7 +54,16 @@ import { DatePickerComponent } from './date-picker/date-picker.component';
     TableComponent,
     ChartComponent,
     RideFilterComponent,
-    DatePickerComponent
+    DatePickerComponent,
+    LoginComponent,
+    CreateUserComponent,
+    FavoriteRidesComponent,
+    FavoriteRidesSelectorComponent
+  ],
+  entryComponents: [
+    LoginComponent,
+    CreateUserComponent,
+    FavoriteRidesSelectorComponent
   ],
   providers: [
     GoogleMapsAPIWrapper

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ParkApiService } from '../park-api.service';
+import { ServerApiService } from '../server-api.service';
 import { Subscription } from 'rxjs';
 import { EventService } from '../event.service';
 
@@ -12,11 +12,15 @@ export class RideFilterComponent implements OnInit, OnDestroy {
   parks: string[] = ['All Parks'];
   parksSubscription: Subscription;
   parkFilter = 'All Parks';
-  constructor(private parkApiService: ParkApiService, private eventService: EventService) { }
+  constructor(private serverApiService: ServerApiService, private eventService: EventService) {
+    this.eventService.userChange$.subscribe(userName => {
+      this.parks.push('Favorite Rides');
+    });
+  }
 
   ngOnInit() {
     // Get list of rides from server
-    this.parksSubscription = this.parkApiService.getParks().subscribe(res => {
+    this.parksSubscription = this.serverApiService.getParks().subscribe(res => {
       const keys = Object.keys(res.body);
       for (const key of keys) {
         this.parks.push(res.body[key].parkName);

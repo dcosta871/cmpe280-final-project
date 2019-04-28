@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EventService } from '../event.service';
-import { ParkApiService } from '../park-api.service';
+import { ServerApiService } from '../server-api.service';
 @Component({
   selector: 'app-chart',
   template: '<h3 class="chart-title" >{{chartTitle}}</h3>\n' +
@@ -115,7 +115,7 @@ export class ChartComponent implements OnInit {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
-  constructor(private eventService: EventService, private parksApiService: ParkApiService) {
+  constructor(private eventService: EventService, private parksApiService: ServerApiService) {
     const date = new Date();
     this.month = date.getMonth() + 1;
     this.day = date.getDate();

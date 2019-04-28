@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MapsAPILoader, AgmMap } from '@agm/core';
-import { ParkApiService } from '../park-api.service';
+import { ServerApiService } from '../server-api.service';
 import { Subscription } from 'rxjs';
 import { EventService } from '../event.service';
 
@@ -30,7 +30,17 @@ export class MapComponent implements OnInit, OnDestroy {
   totalRides = [];
   parksSubscription: Subscription;
   eventServiceSubscription: Subscription;
-  constructor(public mapsApiLoader: MapsAPILoader, private parkApiService: ParkApiService, private eventService: EventService) { }
+  favoriteRides: string[];
+  parkFilter = 'All Parks';
+
+  constructor(public mapsApiLoader: MapsAPILoader, private serverApiService: ServerApiService, private eventService: EventService) {
+    eventService.favoriteRidesObtained$.subscribe(favoriteRides => {
+      this.favoriteRides = favoriteRides;
+      if (this.parkFilter === 'Favorite Rides') {
+        this.updateMarkers();
+      }
+    });
+  }
 
   ngOnInit() {
     // Load map and center it on theme park
@@ -41,7 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     // Get list of rides from server
-    this.parksSubscription = this.parkApiService.getParks().subscribe(res => {
+    this.parksSubscription = this.serverApiService.getParks().subscribe(res => {
       const keys = Object.keys(res.body);
       for (const key of keys) {
         const parkRides = res.body[key].rides;
@@ -59,12 +69,8 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.eventServiceSubscription = this.eventService.parkFilter$.subscribe(parkFilter => {
-      this.visibleRides = [];
-      for (const ride of this.totalRides) {
-        if (ride.parkName === parkFilter || parkFilter === 'All Parks') {
-          this.visibleRides.push(ride);
-        }
-      }
+      this.parkFilter = parkFilter;
+      this.updateMarkers();
     });
 
     this.eventServiceSubscription = this.eventService.rideChange$.subscribe(rideChange => {
@@ -86,6 +92,16 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.parksSubscription) {
       this.parksSubscription.unsubscribe();
+    }
+  }
+
+  updateMarkers() {
+    this.visibleRides = [];
+    for (const ride of this.totalRides) {
+      if (ride.parkName === this.parkFilter || this.parkFilter === 'All Parks' ||
+          (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.rideName) > -1)) {
+        this.visibleRides.push(ride);
+      }
     }
   }
 }

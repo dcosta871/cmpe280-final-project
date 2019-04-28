@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { ParkApiService } from '../park-api.service';
+import { ServerApiService } from '../server-api.service';
 import { EventService } from '../event.service';
 
 
@@ -16,11 +16,21 @@ export class TableComponent implements OnInit, OnDestroy {
   eventParkFilterSubscription: Subscription;
   eventDateChangeSubscription: Subscription;
   rides = [];
+  parkFilter = 'All Parks';
   dataSource: MatTableDataSource < {} >;
-  constructor(private rideApiService: ParkApiService, private eventService: EventService) { }
+  favoriteRides: string[];
+
+  constructor(private serverApiService: ServerApiService, private eventService: EventService) {
+    eventService.favoriteRidesObtained$.subscribe(favoriteRides => {
+      this.favoriteRides = favoriteRides;
+      if (this.parkFilter === 'Favorite Rides') {
+        this.filterRows();
+      }
+    });
+  }
 
   ngOnInit() {
-    this.ridesSubscription = this.rideApiService.getParks().subscribe(res => {
+    this.ridesSubscription = this.serverApiService.getParks().subscribe(res => {
       this.dataSource = new MatTableDataSource([]);
       const keys = Object.keys(res.body);
       for (const key of keys) {
@@ -42,14 +52,8 @@ export class TableComponent implements OnInit, OnDestroy {
     });
 
     this.eventParkFilterSubscription = this.eventService.parkFilter$.subscribe(parkFilter => {
-      this.dataSource = new MatTableDataSource([]);
-      const data = this.dataSource.data;
-      for (const ride of this.rides) {
-        if (ride.park === parkFilter || parkFilter === 'All Parks') {
-          data.push(ride);
-        }
-      }
-      this.dataSource.data = data;
+      this.parkFilter = parkFilter;
+      this.filterRows();
     });
   }
 
@@ -65,6 +69,18 @@ export class TableComponent implements OnInit, OnDestroy {
     if (this.ridesSubscription) {
       this.ridesSubscription.unsubscribe();
     }
+  }
+
+  filterRows() {
+    this.dataSource = new MatTableDataSource([]);
+    const data = this.dataSource.data;
+    for (const ride of this.rides) {
+      if (ride.park === this.parkFilter || this.parkFilter === 'All Parks' ||
+          (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.ride) > -1)) {
+        data.push(ride);
+      }
+    }
+    this.dataSource.data = data;
   }
 
 }
