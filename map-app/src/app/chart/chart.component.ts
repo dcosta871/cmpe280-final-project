@@ -26,6 +26,7 @@ export class ChartComponent implements OnInit {
   month: number;
   day: number;
   year: number;
+  dayOfWeek: number;
   selectedRide: string;
   chartTitle = '';
   multi: any[] = [{
@@ -129,6 +130,7 @@ export class ChartComponent implements OnInit {
       if (dateChange) {
         this.month = dateChange.getMonth() + 1;
         this.day = dateChange.getDate();
+        this.dayOfWeek = this.mapDayOfWeek(dateChange.getDay());
         this.year = dateChange.getFullYear();
         this.chartTitle = `${this.selectedRide}  ${this.month}/${this.day}/${this.year}`;
         this.sendPredictRequest();
@@ -149,10 +151,35 @@ export class ChartComponent implements OnInit {
       ride: `${this.selectedRide}`,
       month: `${this.month}`,
       day: `${this.day}`,
-      year: `${this.year}`
+      year: `${this.year}`,
+      dayofweek: `${this.dayOfWeek}`
     }).subscribe(metrics => {
       this.multi[0].series = metrics;
       this.multi = [...this.multi];
     });
+  }
+
+  mapDayOfWeek(originalDay: number) {
+    if(originalDay === 0) {
+      return 3;
+    }
+    else if(originalDay === 1) {
+      return 1;
+    }
+    else if(originalDay === 2) {
+      return 5;
+    }
+    else if(originalDay === 3) {
+      return 6;
+    }
+    else if(originalDay === 4) {
+      return 4;
+    }
+    else if(originalDay === 5) {
+      return 0;
+    }
+    else if(originalDay === 6) {
+      return 2;
+    }
   }
 }
