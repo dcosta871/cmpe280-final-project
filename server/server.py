@@ -6,6 +6,8 @@ import random
 from os import urandom
 import json
 import hashlib
+import pickle
+import pandas as pd
 
 
 client = MongoClient('localhost', 27017)
@@ -14,6 +16,20 @@ db = client.rides_app_db
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+models = {'Alien Swirling Saucers':pickle.load(open('xgb_alien_saucers.pkl','rb')),
+"Rock 'n' Roller Coaster":pickle.load(open('xgb_rock_n_rollercoaster.pkl','rb')),
+"Slinky Dog Dash":pickle.load(open('xgb_slinky_dog.pkl','rb')),
+"Toy Story Mania!":pickle.load(open('xgb_toy_story_mania.pkl','rb')),
+"Avatar Flight of Passage":pickle.load(open('xgb_flight_of_passage.pkl','rb')),
+"DINOSAUR":pickle.load(open('xgb_dinosaur.pkl','rb')),
+"Expedition Everest":pickle.load(open('xgb_expedition_everest.pkl','rb')),
+"Kilimanjaro Safaris":pickle.load(open('xgb_kilimanjaro_safaris.pkl','rb')),
+"Na'vi River Journey":pickle.load(open('xgb_navi_river.pkl','rb')),
+"Pirates of the Caribbean":pickle.load(open('xgb_pirates_of_caribbean.pkl','rb')),
+"Seven Dwarfs Mine Train":pickle.load(open('xgb_dwarves.pkl','rb')),
+"Splash Mountain ":pickle.load(open('xgb_splash_mountain.pkl','rb')),
+"Soarin":pickle.load(open('xgb_soarin.pkl','rb'))
+}
 
 @app.route("/api/parks", methods=["GET"])
 def rides():
@@ -28,75 +44,94 @@ def rides():
 def predict():
     request_json = request.get_json()
     print(request_json)
+    # print(request_json['month'])
+    # print(request_json['dayofweek'])
+    wait_times = {}
+    model = models[request_json['ride']]
 
+
+    month= int(request_json['month'])
+    day= int(request_json['day'])
+    year= int(request_json['year'])
+    hours = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0]
+    minute= 0
+    dayofweek= int(request_json['dayofweek'])
+
+    for hour in hours:
+        data = [[month, day, year, hour, minute, dayofweek]]
+        input_df = pd.DataFrame(data, columns =['Month','Day','Year','Hour','Minute','DayOfWeek'])
+        prediction = model.predict(input_df)
+        wait_times[hour] = int(prediction[0])
+
+    print(wait_times)
     return jsonify([
       {
         'name': '8am',
-        'value': random.randint(1,101)
+        'value': wait_times[8]
       },
       {
         'name': '9am',
-        'value': random.randint(1,101)
+        'value': wait_times[9]
       },
       {
         'name': '10am',
-        'value': random.randint(1,101)
+        'value': wait_times[10]
       },
       {
         'name': '11am',
-        'value': random.randint(1,101)
+        'value': wait_times[11]
       },
       {
         'name': '12pm',
-        'value': random.randint(1,101)
+        'value': wait_times[12]
       },
       {
         'name': '1pm',
-        'value': random.randint(1,101)
+        'value': wait_times[13]
       },
       {
         'name': '2pm',
-        'value': random.randint(1,101)
+        'value': wait_times[14]
       },
       {
         'name': '3pm',
-        'value': random.randint(1,101)
+        'value': wait_times[15]
       },
       {
         'name': '4pm',
-        'value': random.randint(1,101)
+        'value': wait_times[16]
       },
       {
         'name': '5pm',
-        'value': random.randint(1,101)
+        'value': wait_times[17]
       },
       {
         'name': '6pm',
-        'value': random.randint(1,101)
+        'value': wait_times[18]
       },
       {
         'name': '7pm',
-        'value': random.randint(1,101)
+        'value': wait_times[19]
       },
       {
         'name': '8pm',
-        'value': random.randint(1,101)
+        'value': wait_times[20]
       },
       {
         'name': '9pm',
-        'value': random.randint(1,101)
+        'value': wait_times[21]
       },
       {
         'name': '10pm',
-        'value': random.randint(1,101)
+        'value': wait_times[22]
       },
       {
         'name': '11pm',
-        'value': random.randint(1,101)
+        'value': wait_times[23]
       },
       {
         'name': '12am',
-        'value': random.randint(1,101)
+        'value': wait_times[0]
       }
     ])
 
@@ -245,4 +280,4 @@ def set_favorite_rides():
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=8000)
