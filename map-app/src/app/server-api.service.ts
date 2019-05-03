@@ -5,11 +5,13 @@ import { Park } from './park';
 import { FLASK_URL } from '../environments/environment';
 import { Metric } from './metric';
 import { EventService } from './event.service';
+import { Ride } from './ride';
 
-interface UserInfoResponse {
+interface User {
   userName: string;
+  image: string;
+  favorite_rides: Ride[];
 }
-
 @Injectable({
   providedIn: 'root'
 })
@@ -19,8 +21,8 @@ export class ServerApiService {
 
   constructor(private http: HttpClient, private eventService: EventService) {
     if (localStorage.getItem('rides_app_token')) {
-      this.getUserInfo().subscribe(res => {
-        eventService.userChange(res.userName);
+      this.getUserInfo().subscribe(res  => {
+        eventService.userChange(res);
       }, err => {
         localStorage.removeItem('rides_app_token');
       });
@@ -56,7 +58,7 @@ export class ServerApiService {
         Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
       })
     };
-    return this.http.post<object>(FLASK_URL + '/api/logout', {}, httpOptions);
+    return this.http.post<User>(FLASK_URL + '/api/logout', {}, httpOptions);
   }
 
   createUser(userData): Observable<object> {
@@ -68,14 +70,14 @@ export class ServerApiService {
     return this.http.post<object>(FLASK_URL + '/api/create_user', userData, httpOptions);
   }
 
-  getUserInfo(): Observable<UserInfoResponse> {
+  getUserInfo(): Observable<User> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
       })
     };
-    return this.http.get<UserInfoResponse>(FLASK_URL + '/api/user', httpOptions);
+    return this.http.get<User>(FLASK_URL + '/api/user', httpOptions);
   }
 
   getFavoriteRides(): Observable<object> {
@@ -96,5 +98,25 @@ export class ServerApiService {
       })
     };
     return this.http.post<object>(FLASK_URL + '/api/favorite_rides', favoriteRides, httpOptions);
+  }
+
+  setUserImage(imageContent): Observable<object> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
+      })
+    };
+    return this.http.post<object>(FLASK_URL + '/api/user_image', imageContent, httpOptions);
+  }
+
+  deleteUser(): Observable<object> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
+      })
+    };
+    return this.http.delete<object>(FLASK_URL + '/api/user', httpOptions);
   }
 }

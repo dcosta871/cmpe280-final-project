@@ -22,7 +22,6 @@ export class FavoriteRidesComponent implements OnInit {
     const userChangeSub = this.eventService.userChange$.subscribe(userName => {
       this.isLoggedIn = true;
       this.updateRides();
-      userChangeSub.unsubscribe();
     });
   }
 

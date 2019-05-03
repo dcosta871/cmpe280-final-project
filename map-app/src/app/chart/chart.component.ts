@@ -102,7 +102,8 @@ export class ChartComponent implements OnInit {
       }
     ]
   }];
-  view: any[] = [700, 400];
+  chartHeight = 700;
+  view: any[] = (typeof window.orientation !== 'undefined') ? [400, 400] : [700, 400];
   showXAxis = true;
   showYAxis = true;
   gradient = false;
@@ -120,6 +121,7 @@ export class ChartComponent implements OnInit {
     const date = new Date();
     this.month = date.getMonth() + 1;
     this.day = date.getDate();
+    this.dayOfWeek = this.mapDayOfWeek(date.getDay());
     this.year = date.getFullYear();
     this.selectedRide = 'Alien Swirling Saucers';
     this.sendPredictRequest();
@@ -160,25 +162,19 @@ export class ChartComponent implements OnInit {
   }
 
   mapDayOfWeek(originalDay: number) {
-    if(originalDay === 0) {
+    if (originalDay === 0) {
       return 3;
-    }
-    else if(originalDay === 1) {
+    } else if (originalDay === 1) {
       return 1;
-    }
-    else if(originalDay === 2) {
+    } else if (originalDay === 2) {
       return 5;
-    }
-    else if(originalDay === 3) {
+    } else if (originalDay === 3) {
       return 6;
-    }
-    else if(originalDay === 4) {
+    } else if (originalDay === 4) {
       return 4;
-    }
-    else if(originalDay === 5) {
+    } else if (originalDay === 5) {
       return 0;
-    }
-    else if(originalDay === 6) {
+    } else if (originalDay === 6) {
       return 2;
     }
   }

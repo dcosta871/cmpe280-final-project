@@ -15,5 +15,8 @@ export class AppComponent {
     if (typeof window.orientation !== 'undefined') {
       this.isMobile = true;
     }
+    this.eventService.mapAppChangeSource$.subscribe( isMapAppClicked => {
+      this.showApp = isMapAppClicked;
+    });
   }
 }

@@ -14,8 +14,8 @@ export class ToolbarComponent implements OnInit {
   userName = '';
   isLoggedIn = false;
   constructor(public dialog: MatDialog, private eventService: EventService, private serverAPIService: ServerApiService) {
-    this.eventService.userChange$.subscribe(userName => {
-      this.userName = userName;
+    this.eventService.userChange$.subscribe(user => {
+      this.userName = user.userName;
       this.isLoggedIn = true;
     });
   }
@@ -48,6 +48,13 @@ export class ToolbarComponent implements OnInit {
     }, err => {
       localStorage.removeItem('rides_app_token');
       location.reload();
+    });
+  }
+
+  triggerUserClickEvent(isMapAppClicked: boolean) {
+    this.eventService.mapAppChange(isMapAppClicked);
+    this.serverAPIService.getUserInfo().subscribe(user => {
+      this.eventService.userChange(user);
     });
   }
 }

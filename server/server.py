@@ -32,6 +32,7 @@ models = {'Alien Swirling Saucers':pickle.load(open('xgb_alien_saucers.pkl','rb'
 "Soarin":pickle.load(open('xgb_soarin.pkl','rb'))
 }
 
+
 @app.route("/api/parks", methods=["GET"])
 def rides():
     rides_cursor = db.parks.find({}, {'_id': False})
@@ -136,6 +137,7 @@ def predict():
       }
     ])
 
+
 @app.route("/api/create_user", methods=["POST"])
 def create_user():
     request_json = request.get_json()
@@ -160,9 +162,11 @@ def create_user():
           'user_name': request_json['user_name'],
           'password': password,
           'favorite_rides': [],
+          'image': '',
           'token': token_hashed
         })
         return Response(json.dumps({'status': 'user_created', 'token': token}), status=200, mimetype='application/json')
+
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -190,6 +194,7 @@ def login():
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
+
 @app.route("/api/logout", methods=["POST"])
 def logout():
     token = request.headers.get('Authorization')
@@ -215,6 +220,7 @@ def logout():
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
+
 @app.route("/api/user", methods=["GET"])
 def get_user_info():
     token = request.headers.get('Authorization')
@@ -229,7 +235,27 @@ def get_user_info():
             break
 
     if found_user:
-        return Response(json.dumps({'status': 'successful', 'userName': found_user['user_name']}), status=200, mimetype='application/json')
+        return Response(json.dumps({'status': 'successful', 'userName': found_user['user_name'], 'image': found_user['image'], 'favorite_rides': found_user['favorite_rides']}), status=200, mimetype='application/json')
+    else:
+        return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
+
+
+@app.route("/api/user", methods=["DELETE"])
+def delete_user():
+    token = request.headers.get('Authorization')
+    token = token[7:]
+    users_cursor = db.users.find({}, {'_id': False})
+    found_user = None
+    token_hash = hashlib.md5(token.encode())
+    token_hashed = token_hash.hexdigest()
+    for user in users_cursor:
+        if user['token'] == token_hashed:
+            found_user = user
+            break
+
+    if found_user:
+        db.users.delete_one({'token': token_hashed})
+        return Response(json.dumps({'status': 'successful'}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
@@ -252,6 +278,7 @@ def get_favorite_rides():
         return Response(json.dumps({'status': 'successful', 'favoriteRides': found_user['favorite_rides']}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
+
 
 @app.route("/api/favorite_rides", methods=["POST"])
 def set_favorite_rides():
@@ -277,6 +304,35 @@ def set_favorite_rides():
             }}
         )
         return Response(json.dumps({'status': 'successful', 'favoriteRides': found_user['favorite_rides']}), status=200, mimetype='application/json')
+    else:
+        return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
+
+
+@app.route("/api/user_image", methods=["POST"])
+def set_user_image():
+    print('hi')
+    request_json = request.get_json()
+    image = request_json['image']
+    token = request.headers.get('Authorization')
+    token = token[7:]
+    users_cursor = db.users.find({}, {'_id': False})
+
+    found_user = None
+    token_hash = hashlib.md5(token.encode())
+    token_hashed = token_hash.hexdigest()
+    for user in users_cursor:
+        if user['token'] == token_hashed:
+            found_user = user
+            break
+
+    if found_user:
+        db.users.update_one(
+            {'token': token_hashed},
+            {'$set': {
+                'image': image
+            }}
+        )
+        return Response(json.dumps({'status': 'successful'}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 

@@ -22,6 +22,7 @@ import { LoginComponent } from './login/login.component';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { FavoriteRidesComponent } from './favorite-rides/favorite-rides.component';
 import { FavoriteRidesSelectorComponent } from './favorite-rides-selector/favorite-rides-selector.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
   imports: [
@@ -58,7 +59,8 @@ import { FavoriteRidesSelectorComponent } from './favorite-rides-selector/favori
     LoginComponent,
     CreateUserComponent,
     FavoriteRidesComponent,
-    FavoriteRidesSelectorComponent
+    FavoriteRidesSelectorComponent,
+    UserProfileComponent
   ],
   entryComponents: [
     LoginComponent,

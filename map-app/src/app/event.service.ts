@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Ride } from './ride';
 
 interface RideChange {
   ride: string;
   adjust: boolean;
+}
+
+interface User {
+  userName: string;
+  image: string;
+  favorite_rides: Ride[];
 }
 
 @Injectable({
@@ -16,13 +23,15 @@ export class EventService {
   private parkFilterSource = new Subject<string>();
   private dateChangeSource = new Subject<Date>();
   private rideChangeSource = new Subject<RideChange>();
-  private userChangeSource = new Subject<string>();
+  private userChangeSource = new Subject<User>();
+  private mapAppChangeSource = new Subject<boolean>();
   private favoriteRidesObtainedSource = new Subject<string[]>();
 
   parkFilter$ = this.parkFilterSource.asObservable();
   dateChange$ = this.dateChangeSource.asObservable();
   rideChange$ = this.rideChangeSource.asObservable();
   userChange$ = this.userChangeSource.asObservable();
+  mapAppChangeSource$ = this.mapAppChangeSource.asObservable();
   favoriteRidesObtained$ = this.favoriteRidesObtainedSource.asObservable();
 
   parkFilter(mission: string) {
@@ -37,8 +46,12 @@ export class EventService {
     this.rideChangeSource.next({ride: rideName, adjust: readjustMap});
   }
 
-  userChange(userName: string) {
-    this.userChangeSource.next(userName);
+  userChange(user: User) {
+    this.userChangeSource.next(user);
+  }
+
+  mapAppChange(mapAppSelected: boolean) {
+    this.mapAppChangeSource.next(mapAppSelected);
   }
 
   favoriteRidesObtained(favoriteRides: string[]) {
