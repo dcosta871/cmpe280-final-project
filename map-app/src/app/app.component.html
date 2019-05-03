@@ -1,13 +1,26 @@
-<app-toolbar></app-toolbar>
-<div fxLayout="row">
-    <app-map fxFlex="50%"></app-map>
-    <app-chart fxFlex="50%"></app-chart>
-</div>
+<div *ngIf="!isMobile">
+    <app-toolbar></app-toolbar>
+    <div fxLayout="row">
+        <app-map fxFlex="50%"></app-map>
+        <app-chart fxFlex="50%"></app-chart>
+    </div>
 
-<div fxLayout="row">
-    <app-ride-filter fxFlex="15%"></app-ride-filter>
-    <app-date-picker fxFlex="15%"></app-date-picker>
-    <app-favorite-rides></app-favorite-rides>
+    <div fxLayout="row">
+        <app-ride-filter fxFlex="15%"></app-ride-filter>
+        <app-date-picker fxFlex="15%"></app-date-picker>
+        <app-favorite-rides></app-favorite-rides>
+    </div>
+    <app-table></app-table>
 </div>
-<app-table></app-table>
+<div *ngIf="isMobile">
+    <app-toolbar></app-toolbar>
+    <app-map ></app-map>
+    <app-chart></app-chart>
+
+
+    <app-ride-filter></app-ride-filter>
+    <app-date-picker></app-date-picker>
+    <app-favorite-rides></app-favorite-rides>
+    <app-table></app-table>
+</div>
 <router-outlet></router-outlet>

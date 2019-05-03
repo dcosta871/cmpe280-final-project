@@ -27,6 +27,7 @@ models = {'Alien Swirling Saucers':pickle.load(open('xgb_alien_saucers.pkl','rb'
 "Na'vi River Journey":pickle.load(open('xgb_navi_river.pkl','rb')),
 "Pirates of the Caribbean":pickle.load(open('xgb_pirates_of_caribbean.pkl','rb')),
 "Seven Dwarfs Mine Train":pickle.load(open('xgb_dwarves.pkl','rb')),
+"Spaceship Earth":pickle.load(open('xgb_spaceship_earth.pkl','rb')),
 "Splash Mountain ":pickle.load(open('xgb_splash_mountain.pkl','rb')),
 "Soarin":pickle.load(open('xgb_soarin.pkl','rb'))
 }
