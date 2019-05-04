@@ -5,7 +5,7 @@
 export const environment = {
   production: false
 };
-export const FLASK_URL = 'http://54.186.83.48';
+export const FLASK_URL = 'http://34.208.13.227:8000';
 
 /*
  * For easier debugging in development mode, you can import the following file
