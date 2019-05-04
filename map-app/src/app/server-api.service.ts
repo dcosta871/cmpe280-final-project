@@ -10,7 +10,8 @@ import { Ride } from './ride';
 interface User {
   userName: string;
   image: string;
-  favorite_rides: Ride[];
+  favorite_rides: string[];
+  recent_rides: string[];
 }
 @Injectable({
   providedIn: 'root'
@@ -80,16 +81,6 @@ export class ServerApiService {
     return this.http.get<User>(FLASK_URL + '/api/user', httpOptions);
   }
 
-  getFavoriteRides(): Observable<object> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
-      })
-    };
-    return this.http.get<object>(FLASK_URL + '/api/favorite_rides', httpOptions);
-  }
-
   setFavoriteRides(favoriteRides): Observable<object> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -98,6 +89,16 @@ export class ServerApiService {
       })
     };
     return this.http.post<object>(FLASK_URL + '/api/favorite_rides', favoriteRides, httpOptions);
+  }
+
+  addRecentRide(recentRide): Observable<object> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('rides_app_token')}`
+      })
+    };
+    return this.http.post<object>(FLASK_URL + '/api/recent_rides', recentRide, httpOptions);
   }
 
   setUserImage(imageContent): Observable<object> {

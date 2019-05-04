@@ -116,8 +116,13 @@ export class ChartComponent implements OnInit {
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
+  isLoggedIn = false;
 
-  constructor(private eventService: EventService, private parksApiService: ServerApiService) {
+  constructor(private eventService: EventService, private serverApiService: ServerApiService) {
+    this.eventService.userChange$.subscribe(user => {
+      this.isLoggedIn = true;
+    });
+
     const date = new Date();
     this.month = date.getMonth() + 1;
     this.day = date.getDate();
@@ -149,7 +154,7 @@ export class ChartComponent implements OnInit {
   }
 
   sendPredictRequest() {
-    this.parksApiService.getPrediction({
+    this.serverApiService.getPrediction({
       ride: `${this.selectedRide}`,
       month: `${this.month}`,
       day: `${this.day}`,
@@ -158,6 +163,14 @@ export class ChartComponent implements OnInit {
     }).subscribe(metrics => {
       this.multi[0].series = metrics;
       this.multi = [...this.multi];
+
+      if (this.isLoggedIn) {
+        this.serverApiService.addRecentRide({ recent_ride: this.selectedRide }).subscribe( (res: any) => {
+          this.serverApiService.getUserInfo().subscribe( userRes => {
+            this.eventService.userChange(userRes);
+          });
+        });
+      }
     });
   }
 

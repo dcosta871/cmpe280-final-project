@@ -31,12 +31,14 @@ export class MapComponent implements OnInit, OnDestroy {
   parksSubscription: Subscription;
   eventServiceSubscription: Subscription;
   favoriteRides: string[];
+  recentRides: string[];
   parkFilter = 'All Parks';
 
   constructor(public mapsApiLoader: MapsAPILoader, private serverApiService: ServerApiService, private eventService: EventService) {
-    eventService.favoriteRidesObtained$.subscribe(favoriteRides => {
-      this.favoriteRides = favoriteRides;
-      if (this.parkFilter === 'Favorite Rides') {
+    eventService.userChange$.subscribe(res => {
+      this.favoriteRides = res.favorite_rides;
+      this.recentRides = res.recent_rides;
+      if (this.parkFilter === 'Favorite Rides' || this.parkFilter === 'Recent Rides') {
         this.updateMarkers();
       }
     });
@@ -99,7 +101,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this.visibleRides = [];
     for (const ride of this.totalRides) {
       if (ride.parkName === this.parkFilter || this.parkFilter === 'All Parks' ||
-          (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.rideName) > -1)) {
+          (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.rideName) > -1) ||
+          (this.parkFilter === 'Recent Rides' && this.recentRides.indexOf(ride.rideName) > -1)) {
         this.visibleRides.push(ride);
       }
     }

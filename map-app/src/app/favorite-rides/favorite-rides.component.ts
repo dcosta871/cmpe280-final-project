@@ -17,10 +17,16 @@ export class FavoriteRidesComponent implements OnInit {
   isLoggedIn = false;
   totalRides = [];
   favoriteRides = [];
+  parks = [];
 
   constructor(public dialog: MatDialog, private eventService: EventService, private serverAPIService: ServerApiService) {
-    const userChangeSub = this.eventService.userChange$.subscribe(userName => {
+    const getParksSub = this.serverAPIService.getParks().subscribe(parksRes => {
+      this.parks = parksRes.body;
+      this.updateRides();
+    });
+    const userChangeSub = this.eventService.userChange$.subscribe(user => {
       this.isLoggedIn = true;
+      this.favoriteRides = user.favorite_rides;
       this.updateRides();
     });
   }
@@ -37,32 +43,25 @@ export class FavoriteRidesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.totalRides = [];
       this.favoriteRides = [];
-      this.updateRides();
+      this.serverAPIService.getUserInfo().subscribe( res => {
+      });
     });
   }
 
   private updateRides() {
-    const getFavoriteRidesSub = this.serverAPIService.getFavoriteRides().subscribe((res: FavoriteRidesResponse) => {
-      this.favoriteRides = res.favoriteRides;
-      this.eventService.favoriteRidesObtained(res.favoriteRides);
-      const getParksSub = this.serverAPIService.getParks().subscribe(parksRes => {
-        const keys = Object.keys(parksRes.body);
-        for (const key of keys) {
-          const parkRides = parksRes.body[key].rides;
-          for (const ride of parkRides) {
-            let favoriteRide = false;
-            if (this.favoriteRides.indexOf(ride.rideName) > -1) {
-              favoriteRide = true;
-            }
-            this.totalRides.push({
-              rideName: ride.rideName,
-              isFavoriteRide: favoriteRide
-            });
-          }
-          getFavoriteRidesSub.unsubscribe();
-          getParksSub.unsubscribe();
+    const keys = Object.keys(this.parks);
+    for (const key of keys) {
+      const parkRides = this.parks[key].rides;
+      for (const ride of parkRides) {
+        let favoriteRide = false;
+        if (this.favoriteRides.indexOf(ride.rideName) > -1) {
+          favoriteRide = true;
         }
-      });
-    });
+        this.totalRides.push({
+          rideName: ride.rideName,
+          isFavoriteRide: favoriteRide
+        });
+      }
+    }
   }
 }

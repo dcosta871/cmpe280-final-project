@@ -13,8 +13,10 @@ export class RideFilterComponent implements OnInit, OnDestroy {
   parksSubscription: Subscription;
   parkFilter = 'All Parks';
   constructor(private serverApiService: ServerApiService, private eventService: EventService) {
-    this.eventService.userChange$.subscribe(userName => {
+    const userChangeSub = this.eventService.userChange$.subscribe(userName => {
       this.parks.push('Favorite Rides');
+      this.parks.push('Recent Rides');
+      userChangeSub.unsubscribe();
     });
   }
 

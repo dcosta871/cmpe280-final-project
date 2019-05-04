@@ -162,6 +162,7 @@ def create_user():
           'user_name': request_json['user_name'],
           'password': password,
           'favorite_rides': [],
+          'recent_rides': [],
           'image': '',
           'token': token_hashed
         })
@@ -235,7 +236,9 @@ def get_user_info():
             break
 
     if found_user:
-        return Response(json.dumps({'status': 'successful', 'userName': found_user['user_name'], 'image': found_user['image'], 'favorite_rides': found_user['favorite_rides']}), status=200, mimetype='application/json')
+        return Response(json.dumps({'status': 'successful', 'userName': found_user['user_name'],
+                                    'image': found_user['image'], 'favorite_rides': found_user['favorite_rides'],
+                                    'recent_rides': found_user['recent_rides']}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
@@ -256,26 +259,6 @@ def delete_user():
     if found_user:
         db.users.delete_one({'token': token_hashed})
         return Response(json.dumps({'status': 'successful'}), status=200, mimetype='application/json')
-    else:
-        return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
-
-
-@app.route("/api/favorite_rides", methods=["GET"])
-def get_favorite_rides():
-    token = request.headers.get('Authorization')
-    token = token[7:]
-    users_cursor = db.users.find({}, {'_id': False})
-
-    found_user = None
-    token_hash = hashlib.md5(token.encode())
-    token_hashed = token_hash.hexdigest()
-    for user in users_cursor:
-        if user['token'] == token_hashed:
-            found_user = user
-            break
-
-    if found_user:
-        return Response(json.dumps({'status': 'successful', 'favoriteRides': found_user['favorite_rides']}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 
@@ -304,6 +287,40 @@ def set_favorite_rides():
             }}
         )
         return Response(json.dumps({'status': 'successful', 'favoriteRides': found_user['favorite_rides']}), status=200, mimetype='application/json')
+    else:
+        return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
+
+
+@app.route("/api/recent_rides", methods=["POST"])
+def add_recent_ride():
+    request_json = request.get_json()
+    recent_ride = request_json['recent_ride']
+    token = request.headers.get('Authorization')
+    token = token[7:]
+    users_cursor = db.users.find({}, {'_id': False})
+
+    found_user = None
+    token_hash = hashlib.md5(token.encode())
+    token_hashed = token_hash.hexdigest()
+    for user in users_cursor:
+        if user['token'] == token_hashed:
+            found_user = user
+            break
+
+    if found_user:
+        recent_rides = found_user['recent_rides']
+        if recent_ride in recent_rides:
+            recent_rides.remove(recent_ride)
+        recent_rides.append(recent_ride)
+        if len(found_user['recent_rides']) > 5:
+            recent_rides = recent_rides[1:]
+        db.users.update_one(
+            {'token': token_hashed},
+            {'$set': {
+                'recent_rides': recent_rides
+            }}
+        )
+        return Response(json.dumps({'status': 'successful', 'recentRides': recent_rides}), status=200, mimetype='application/json')
     else:
         return Response(json.dumps({'status': 'unsuccessful'}), status=401, mimetype='application/json')
 

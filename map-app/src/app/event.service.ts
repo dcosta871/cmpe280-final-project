@@ -10,7 +10,8 @@ interface RideChange {
 interface User {
   userName: string;
   image: string;
-  favorite_rides: Ride[];
+  favorite_rides: string[];
+  recent_rides: string[];
 }
 
 @Injectable({
@@ -25,14 +26,12 @@ export class EventService {
   private rideChangeSource = new Subject<RideChange>();
   private userChangeSource = new Subject<User>();
   private mapAppChangeSource = new Subject<boolean>();
-  private favoriteRidesObtainedSource = new Subject<string[]>();
 
   parkFilter$ = this.parkFilterSource.asObservable();
   dateChange$ = this.dateChangeSource.asObservable();
   rideChange$ = this.rideChangeSource.asObservable();
   userChange$ = this.userChangeSource.asObservable();
   mapAppChangeSource$ = this.mapAppChangeSource.asObservable();
-  favoriteRidesObtained$ = this.favoriteRidesObtainedSource.asObservable();
 
   parkFilter(mission: string) {
     this.parkFilterSource.next(mission);
@@ -52,9 +51,5 @@ export class EventService {
 
   mapAppChange(mapAppSelected: boolean) {
     this.mapAppChangeSource.next(mapAppSelected);
-  }
-
-  favoriteRidesObtained(favoriteRides: string[]) {
-    this.favoriteRidesObtainedSource.next(favoriteRides);
   }
 }

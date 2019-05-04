@@ -19,11 +19,13 @@ export class TableComponent implements OnInit, OnDestroy {
   parkFilter = 'All Parks';
   dataSource: MatTableDataSource < {} >;
   favoriteRides: string[];
+  recentRides: string[];
 
   constructor(private serverApiService: ServerApiService, private eventService: EventService) {
-    eventService.favoriteRidesObtained$.subscribe(favoriteRides => {
-      this.favoriteRides = favoriteRides;
-      if (this.parkFilter === 'Favorite Rides') {
+    eventService.userChange$.subscribe(res => {
+      this.favoriteRides = res.favorite_rides;
+      this.recentRides = res.recent_rides;
+      if (this.parkFilter === 'Favorite Rides' || this.parkFilter === 'Recent Rides') {
         this.filterRows();
       }
     });
@@ -74,10 +76,22 @@ export class TableComponent implements OnInit, OnDestroy {
   filterRows() {
     this.dataSource = new MatTableDataSource([]);
     const data = this.dataSource.data;
-    for (const ride of this.rides) {
-      if (ride.park === this.parkFilter || this.parkFilter === 'All Parks' ||
-          (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.ride) > -1)) {
-        data.push(ride);
+    if (this.parkFilter !== 'Recent Rides') {
+      for (const ride of this.rides) {
+        if (ride.park === this.parkFilter || this.parkFilter === 'All Parks' ||
+            (this.parkFilter === 'Favorite Rides' && this.favoriteRides.indexOf(ride.ride) > -1) ||
+            (this.parkFilter === 'Recent Rides' && this.recentRides.indexOf(ride.ride) > -1)) {
+          data.push(ride);
+        }
+      }
+    } else {
+      // process recent rides differently to maintain order they are stored server side
+      for (const recentRide of this.recentRides) {
+        for (const ride of this.rides) {
+          if (ride.ride === recentRide) {
+            data.push(ride);
+          }
+        }
       }
     }
     this.dataSource.data = data;
