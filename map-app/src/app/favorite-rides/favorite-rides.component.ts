@@ -44,6 +44,7 @@ export class FavoriteRidesComponent implements OnInit {
       this.totalRides = [];
       this.favoriteRides = [];
       this.serverAPIService.getUserInfo().subscribe( res => {
+          this.eventService.userChange(res);
       });
     });
   }
