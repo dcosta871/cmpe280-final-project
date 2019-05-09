@@ -12,3 +12,6 @@ run web app: cd into map-app, run "npm install" then run "ng serve"
 1. Either use Jupyter notebook (install python library first) to view code implementation/run details OR run python standalone script to generate pickle models.
 
 2. Requires XGB library installation + other basic ML libraries, must have GPU processing power, takes a while to run as many data rows/columns.
+
+
+<h1> Website location: http://ec2-54-201-84-148.us-west-2.compute.amazonaws.com/ </h1>
