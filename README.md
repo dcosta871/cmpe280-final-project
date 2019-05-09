@@ -3,9 +3,9 @@
 run db: create db called rides_app_db and in that create collection parks. Import parks.json into this collection. From any directory, run "mongod --config /usr/local/etc/mongod.conf"  
   
 run flask: cd into server, run "FLASK_APP=server.py flask run"  
-  
-run web app: cd into map-app, run "npm install" then run "ng serve"  
 
+run web app: cd into map-app, run "npm install" then run "ng serve"  
+In order to properly render the map you must put your Google Maps API key in map-app/src/app/app.module.ts in the "apiKey" field in AgmCoreModule import. Also if you want to make api calls against your local flask server instead of the one on the ec2 change the url in the environment.ts file to localhost and the port you are running the local flask server before running ng serve.
 
 <h1>TO RUN MACHINE LEARNING (note: Not needed, pickle files already included in server. Only to show generation of XGB pickle models): </h1>
 
