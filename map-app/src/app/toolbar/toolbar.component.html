@@ -1,7 +1,9 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span *ngIf="!isLoggedIn">Rides App</span>
-    <span *ngIf="isLoggedIn" class="rides-app-label" (click)="triggerUserClickEvent(true)">Rides App</span>
+    <!-- <span *ngIf="!isLoggedIn">Rides App</span>
+    <span *ngIf="isLoggedIn" class="rides-app-label" (click)="triggerUserClickEvent(true)">Rides App</span> -->
+    <h1 *ngIf="!isLoggedIn">Disney World Wait Times</h1>
+    <h1 *ngIf="isLoggedIn" class="rides-app-label" (click)="triggerUserClickEvent(true)">Disney World Wait Times</h1>
     <span class="example-spacer"></span>
     <button *ngIf="!isLoggedIn" mat-raised-button (click)="login()" class="login-button">Login</button>
     <button *ngIf="!isLoggedIn" mat-raised-button color="accent" (click)="createUser()">Create User</button>
