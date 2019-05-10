@@ -13,11 +13,11 @@ In order to properly render the map you must put your Google Maps API key in map
 
 <h1>TO RUN MACHINE LEARNING (note: Not needed, pickle files already included in server. Only to show generation of XGB pickle models): </h1>
 
-NOTE: To view machine learning go to MachineLearning and jupyter notebook the directory and go to ipynb file, to run you can run the ipynb file or the standalone python file.
+NOTE: To view machine learning model generation(pickle files) go to MachineLearning and jupyter notebook the directory and go to ipynb file, to run you can run the ipynb file or the standalone python file.
 
 1. Either use Jupyter notebook (install python library first) to view code implementation/run details OR run python standalone script to generate pickle models.
 
-2. Requires XGB library installation + other basic ML libraries, must have GPU processing power, takes a while to run as many data rows/columns.
+2. Requires XGB library installation + other basic ML libraries(sklearn, scipy, pickle), must have GPU processing power, takes a while to run as many data rows/columns.
 
 3. All CSV's for dataset can also be found in MachineLearning Folder
 
