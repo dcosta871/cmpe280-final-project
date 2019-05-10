@@ -15,5 +15,6 @@ NOTE: To view machine learning go to MachineLearning and jupyter notebook the di
 
 2. Requires XGB library installation + other basic ML libraries, must have GPU processing power, takes a while to run as many data rows/columns.
 
+3. All CSV's for dataset can also be found in MachineLearning Folder
 
 <h1> Website: http://ec2-54-201-84-148.us-west-2.compute.amazonaws.com/ </h1>
